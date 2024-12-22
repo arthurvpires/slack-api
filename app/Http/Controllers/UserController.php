@@ -8,7 +8,6 @@ use App\Services\SlackService;
 
 class UserController extends Controller
 {
-
     public function index(SlackService $slackService, Request $req)
     {
         $user = $req->user();
@@ -21,5 +20,4 @@ class UserController extends Controller
 
         return Inertia::render('Dashboard');
     }
-    
 }

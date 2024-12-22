@@ -1,9 +1,6 @@
 <?php
 
-use App\Models\User;
 use Inertia\Inertia;
-use App\Notifications\UserLogin;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\UserController;

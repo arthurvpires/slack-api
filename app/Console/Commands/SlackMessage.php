@@ -37,7 +37,7 @@ class SlackMessage extends Command
 
             $channelId = $channel['id'];
             $this->slackService->sendMessage($channelId, $message);
-            
+
             $progressBar->finish();
             $this->newLine();
 

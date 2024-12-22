@@ -28,19 +28,19 @@ class SlackService
                     'text' => $message,
                 ]
             ]);
-    
+
             $data = json_decode($response->getBody(), true);
 
             if (empty($data['ok'])) {
                 throw new \Exception($data['error'] ?? 'Unknown error');
             }
-    
+
             return $data;
         } catch (\Exception $e) {
             throw new \Exception('Failed to send direct message: ' . $e->getMessage(), 0, $e);
         }
     }
-    
+
     public function getUserIdByEmail(string $email): string
     {
         $response = $this->client->get('https://slack.com/api/users.lookupByEmail', [
