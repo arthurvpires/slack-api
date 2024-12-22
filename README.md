@@ -8,6 +8,7 @@ This project demonstrates a simple integration with Slack using Laravel, enablin
 - Customize the channel and message content via Artisan command options.
 - Send a direct message to a user upon login (one-time only, per session).
 - Clean separation of concerns with the `SlackService` handling API communication.
+- Utilize Laravel Pint for code formatting and adherence to Laravel standards.
 
 ## Prerequisites
 
@@ -137,3 +138,12 @@ You can test the functionality by:
 2. Checking the Slack channel for the delivered messages.
 3. Logging in as a user and verifying the DM is sent once per session.
 4. Inspecting the logs for potential errors or debugging information.
+
+## Code Formatting with Laravel Pint
+
+Laravel Pint is used to maintain a clean and consistent code style. Run Pint to format your codebase:
+
+   ```bash
+   ./vendor/bin/pint
+
+   ```
