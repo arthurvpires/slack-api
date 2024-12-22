@@ -1,66 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Slack Notification Service
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project demonstrates a simple integration with Slack using Laravel, enabling message delivery to Slack channels via Laravel commands. The implementation leverages a dedicated `SlackService` for handling API requests and a `SlackMessage` command for interacting with users through Artisan commands.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Send messages to Slack channels using the Slack API.
+- Customize the channel and message content via Artisan command options.
+- Send a direct message to a user upon login (one-time only, per session).
+- Clean separation of concerns with the `SlackService` handling API communication.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Prerequisites
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- A Slack workspace with a valid bot token.
+- Laravel 9.x or higher installed in your project.
+- A valid Slack Webhook URL for sending notifications.
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Clone the repository:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+   ```bash
+   git clone <repository_url>
+   cd <project_directory>
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. Install dependencies:
 
-## Laravel Sponsors
+   ```bash
+   composer install
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+3. Configure your environment:
+   Add your Slack bot token and Webhook URL to your `.env` file:
 
-### Premium Partners
+   ```env
+   SLACK_BOT_TOKEN=<your_slack_bot_token>
+   SLACK_WEBHOOK_URL=<your_slack_webhook_url>
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## Usage
 
-## Contributing
+### 1. SlackService
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+The `SlackService` handles all requests to the Slack API, including listing channels and sending messages.
 
-## Code of Conduct
+Example methods in `SlackService`:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- `listChannels()`: Retrieves all channels in the Slack workspace.
+- `sendMessage(string $channelId, string $message)`: Sends a message to the specified Slack channel.
+- `getUserIdByEmail(string $email)`: Find an user by his email.
 
-## Security Vulnerabilities
+### 2. SlackMessage Command
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The `SlackMessage` command is used to send messages via the Laravel Artisan CLI. It utilizes the `SlackService` for the actual API communication.
 
-## License
+#### Command Syntax
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan send:slack-message --channel=<channel_name> --message=<message_text>
+```
+
+#### Command Options
+
+- `--channel`: Specifies the Slack channel to send the message to (e.g., `#general`). If omitted, a default channel (`integração-api`) is used.
+- `--message`: Specifies the content of the message to be sent. If omitted, a default message (`Mensagem enviada via Slack API`) is used.
+
+#### Examples
+
+1. Send a message to a specific channel:
+
+   ```bash
+   php artisan send:slack-message --channel="#general" --message="Hello Slack!"
+   ```
+
+2. Use default values:
+
+   ```bash
+   send:slack-message
+   ```
+
+   This sends the default message to the default channel.
+
+3. Customize the message only:
+
+   ```bash
+   php artisansend:slack-message --message="Testing options!"
+   ```
+
+4. Customize the channel only:
+
+   ```bash
+   php artisan send:slack-message --channel="#random"
+   ```
+
+### 3. Automatic Login Notification
+
+When a user logs in, the application sends a direct message (DM) to the user via Slack. This notification is sent only once per session. The logic involves:
+
+- Checking if a session variable indicates the message has already been sent.
+- If not, the `SlackService` sends a DM to the user.
+- The session variable is then updated to prevent duplicate notifications.
+
+#### Implementation
+
+- The login notification logic is triggered in the `UserController`.
+- Example workflow:
+  1. Upon successful login, check for the session variable `has_received_login_notification`.
+  2. If the variable is not set, send a DM using `SlackService`.
+  3. Set the session variable `has_received_login_notification` to `true`.
+
+## Code Structure
+
+### SlackService
+
+- Location: `app/Services/SlackService.php`
+- Responsible for:
+  - Interacting with Slack API endpoints.
+  - Abstracting the API details from other parts of the application.
+
+### SlackMessage Command
+
+- Location: `app/Console/Commands/SlackMessage.php`
+- Responsible for:
+  - Handling user input via Artisan.
+  - Passing user options to the `SlackService`.
+
+### Configuration
+
+- Slack Webhook URL and Bot Token are stored in the `.env` file.
+
+## Testing
+
+You can test the functionality by:
+
+1. Running the `send:slack-message` command with various options.
+2. Checking the Slack channel for the delivered messages.
+3. Logging in as a user and verifying the DM is sent once per session.
+4. Inspecting the logs for potential errors or debugging information.
