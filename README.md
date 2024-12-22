@@ -21,8 +21,7 @@ This project demonstrates a simple integration with Slack using Laravel, enablin
 1. Clone the repository:
 
    ```bash
-   git clone <repository_url>
-   cd <project_directory>
+   git clone https://github.com/arthurvpires/slack-api
    ```
 
 2. Install dependencies:
@@ -49,7 +48,7 @@ Example methods in `SlackService`:
 
 - `listChannels()`: Retrieves all channels in the Slack workspace.
 - `sendMessage(string $channelId, string $message)`: Sends a message to the specified Slack channel.
-- `getUserIdByEmail(string $email)`: Find an user by his email.
+- `getUserIdByEmail(string $email)`: Returns the user ID associated with the provided email address.
 
 ### 2. SlackMessage Command
 
@@ -77,7 +76,7 @@ php artisan send:slack-message --channel=<channel_name> --message=<message_text>
 2. Use default values:
 
    ```bash
-   send:slack-message
+   php artisan send:slack-message
    ```
 
    This sends the default message to the default channel.
@@ -129,15 +128,6 @@ When a user logs in, the application sends a direct message (DM) to the user via
 ### Configuration
 
 - Slack Webhook URL and Bot Token are stored in the `.env` file.
-
-## Testing
-
-You can test the functionality by:
-
-1. Running the `send:slack-message` command with various options.
-2. Checking the Slack channel for the delivered messages.
-3. Logging in as a user and verifying the DM is sent once per session.
-4. Inspecting the logs for potential errors or debugging information.
 
 ## Code Formatting with Laravel Pint
 
