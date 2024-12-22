@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Services\SlackService;
-use App\Notifications\UserLogin;
 
 class UserController extends Controller
 {

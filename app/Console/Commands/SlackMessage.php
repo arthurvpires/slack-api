@@ -23,8 +23,10 @@ class SlackMessage extends Command
     {
         $channelName = $this->option('channel') ?? 'integração-api';
         $message = $this->option('message') ?? 'Mensagem enviada via Slack API';
+        $progressBar = $this->output->createProgressBar(100);
 
         try {
+            $progressBar->start();
             $channels = $this->slackService->listChannels();
             $channel = collect($channels)->firstWhere('name', $channelName);
 
@@ -35,6 +37,9 @@ class SlackMessage extends Command
 
             $channelId = $channel['id'];
             $this->slackService->sendMessage($channelId, $message);
+            
+            $progressBar->finish();
+            $this->newLine();
 
             $this->info("Message sent!");
             $this->newLine();
