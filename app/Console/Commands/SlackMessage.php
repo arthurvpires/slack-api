@@ -47,6 +47,7 @@ class SlackMessage extends Command
             $this->info("Message: {$message}");
 
         } catch (Exception $e) {
+            $this->newLine(2);
             $this->error("Failed to send message: " . $e->getMessage());
         }
     }

@@ -14,7 +14,7 @@ class UserController extends Controller
         $slackUserId = $slackService->getUserIdByEmail($user->email);
 
         if (!session()->has('has_received_login_notification')) {
-            $slackService->sendMessage($slackUserId, "Ei {$user->name}, você fez login na sua conta.");
+            $slackService->sendMessage($slackUserId, "A new login was detected in your Slack account.");
             session()->put('has_received_login_notification', true);
         }
 

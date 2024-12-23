@@ -3,80 +3,79 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 
 class SlackService
 {
-    protected $client;
+    protected $httpClient;
     protected $token;
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->httpClient = new Client();
         $this->token = env('SLACK_BOT_USER_OAUTH_TOKEN');
     }
 
-    public function sendMessage(string $userId, string $message): array
+    public function sendMessage(string $userId, string $message): ?array
     {
-        try {
-            $response = $this->client->post('https://slack.com/api/chat.postMessage', [
-                'headers' => [
-                    'Authorization' => "Bearer {$this->token}",
-                    'Content-Type'  => 'application/json',
-                ],
-                'json' => [
-                    'channel' => $userId,
-                    'text' => $message,
-                ]
-            ]);
+        $reqOptions = [
+            RequestOptions::HEADERS => $this->getHeaders(),
+            RequestOptions::JSON => [
+                'channel' => $userId,
+                'text' => $message,
+            ],
+        ];
 
-            $data = json_decode($response->getBody(), true);
+        $response = $this->httpClient->post(
+            env('SLACK_BASE_URL') . 'chat.postMessage',
+            $reqOptions
+        );
 
-            if (empty($data['ok'])) {
-                throw new \Exception($data['error'] ?? 'Unknown error');
-            }
+        $data = json_decode($response->getBody()->getContents(), true);
 
-            return $data;
-        } catch (\Exception $e) {
-            throw new \Exception('Failed to send direct message: ' . $e->getMessage(), 0, $e);
+        if (empty($data['ok'])) {
+            throw new \Exception($data['error'] ?? 'Unknown error');
         }
+
+        return $data;
     }
 
     public function getUserIdByEmail(string $email): string
     {
-        $response = $this->client->get('https://slack.com/api/users.lookupByEmail', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->token,
-            ],
-            'query' => [
-                'email' => $email,
+        $response = $this->httpClient->get(
+            env('SLACK_BASE_URL') . 'users.lookupByEmail',
+            [
+                RequestOptions::HEADERS => $this->getHeaders(),
+                RequestOptions::QUERY => ['email' => $email]
             ]
-        ]);
+        );
 
         $data = json_decode($response->getBody()->getContents(), true);
-
-        return $data['ok'] === true ? $data['user']['id'] : null;
-
+        return $data['ok'] ? $data['user']['id'] : null;
     }
 
     public function listChannels(): array
     {
-        try {
-            $response = $this->client->get('https://slack.com/api/conversations.list', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
-                ],
-            ]);
+        $response = $this->httpClient->get(
+            env('SLACK_BASE_URL') . 'conversations.list',
+            ['headers' => $this->getHeaders()]
+        );
 
-            $data = json_decode($response->getBody()->getContents(), true);
+        $data = json_decode($response->getBody()->getContents(), true);
 
-            if (empty($data['ok'])) {
-                throw new \Exception($data['error'] ?? 'Unknown error');
-            }
-
-            return $data['channels'];
-        } catch (\Exception $e) {
-            throw new \Exception('Failed to list channels: ' . $e->getMessage(), 0, $e);
+        if (empty($data['ok'])) {
+            throw new \Exception($data['error'] ?? 'Unknown error');
         }
+
+        return $data['channels'];
+    }
+
+    private function getHeaders(): array
+    {
+        return [
+            'Authorization' => "Bearer {$this->token}",
+            'Content-Type' => 'application/json',
+        ];
     }
 
 }
