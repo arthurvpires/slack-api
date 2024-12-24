@@ -19,6 +19,7 @@ const user = usePage().props.auth.user;
 const form = useForm({
     name: user.name,
     email: user.email,
+    slack_id: user.slack_id,
 });
 </script>
 
@@ -68,6 +69,21 @@ const form = useForm({
 
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
+
+            <div>
+                <InputLabel for="slack_id" value="Slack ID" />
+
+                <TextInput
+                    id="username"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.slack_id" 
+                    autocomplete="slack_id"
+                />
+
+                <InputError class="mt-2" :message="form.errors.slack_id" />
+            </div>
+
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
                 <p class="mt-2 text-sm text-gray-800">
