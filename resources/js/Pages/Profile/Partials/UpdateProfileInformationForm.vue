@@ -78,9 +78,10 @@ const form = useForm({
                 <TextInput
                     id="username"
                     type="text"
-                    class="mt-1 block w-full"
+                    class="mt-1 block w-full bg-gray-200"
                     v-model="form.slack_id" 
                     autocomplete="slack_id"
+                    readonly
                 />
 
                 <InputError class="mt-2" :message="form.errors.slack_id" />

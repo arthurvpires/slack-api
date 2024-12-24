@@ -17,7 +17,7 @@ class UserController extends Controller
     private function sendSlackMessage(User $user): void
     {
         $slackService = app(SlackService::class);
-        $slackUserId = $slackService->getUserIdByEmail($user->email);
+        $slackUserId = $user->getSlackUserId();
 
         if ($user->recieve_slack_notifications && !session()->has('has_received_login_notification')) {
             $slackService->sendMessage($slackUserId, "A new login was detected in your Slack account.");
