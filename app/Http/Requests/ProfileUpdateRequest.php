@@ -21,6 +21,7 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'slack_id' => ['nullable', 'string', 'max:255'],
+            'recieve_slack_notifications' => ['required', 'bool'],
         ];
     }
 }

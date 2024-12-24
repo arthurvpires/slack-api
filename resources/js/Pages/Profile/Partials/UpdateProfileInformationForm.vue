@@ -3,6 +3,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import ToggleSwitch from '@/Components/ToggleSwitch.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 
 defineProps({
@@ -20,6 +21,7 @@ const form = useForm({
     name: user.name,
     email: user.email,
     slack_id: user.slack_id,
+    recieve_slack_notifications: user.recieve_slack_notifications,
 });
 </script>
 
@@ -31,7 +33,7 @@ const form = useForm({
             </h2>
 
             <p class="mt-1 text-sm text-gray-600">
-                Update your account's profile information and email address.
+                Update your account's profile information.
             </p>
         </header>
 
@@ -84,6 +86,12 @@ const form = useForm({
                 <InputError class="mt-2" :message="form.errors.slack_id" />
             </div>
 
+            <div>
+                <InputLabel for="recieve_slack_notifications" value="Recieve Slack Notifications" />
+                <div class="mt-2"></div>
+                <ToggleSwitch v-model="form.recieve_slack_notifications" />
+                <InputError class="mt-2" :message="form.errors.recieve_slack_notifications" />
+            </div>
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
                 <p class="mt-2 text-sm text-gray-800">
